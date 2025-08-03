@@ -5,20 +5,35 @@
   "type": "module",
   "scripts": {
     "start": "node app.js",
-    "dev": "nodemon app.js"
+    "dev": "nodemon app.js",
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
+    "test:watch": "jest --watch"
   },
   "dependencies": {
+    "@jest/globals": "^30.0.5",
+    "@prisma/client": "^6.13.0",
     "axios": "^1.10.0",
+    "bcryptjs": "^3.0.2",
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
-    "dotenv": "^17.2.0",
+    "dotenv": "^17.2.1",
     "express": "5.0.0",
-    "morgan": "~1.9.1"
+    "jsonwebtoken": "^9.0.2",
+    "morgan": "~1.9.1",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1",
+    "uuid": "^11.1.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.31.0",
+    "cross-env": "^10.0.0",
+    "dotenv-cli": "^10.0.0",
     "eslint": "^9.31.0",
+    "eslint-plugin-jest": "^29.0.1",
     "globals": "^16.3.0",
-    "nodemon": "^3.1.10"
+    "jest": "^30.0.5",
+    "nodemon": "^3.1.10",
+    "prisma": "^6.13.0",
+    "supertest": "^7.1.4"
   }
 }

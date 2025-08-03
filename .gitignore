@@ -56,9 +56,13 @@ typings/
 
 # dotenv environment variables file
 .env
+.env*
 .env.*.local
 
 # next.js build output
 .next
+
+# prisma
+/generated/prisma
 
 .idea

@@ -1,0 +1,91 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Workspace {
+  id     String             @id @default(uuid())
+  name   String
+  domain String?            @unique
+  users  User[]
+  tokens IntegrationToken[]
+
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+  Invitation Invitation[]
+}
+
+model User {
+  id             String   @id @default(uuid())
+  username       String
+  email          String   @unique
+  hashedPassword String
+  role           UserRole
+  telegramId     String? // Optional
+
+  workspaceId String?
+  workspace   Workspace? @relation(fields: [workspaceId], references: [id])
+
+  tokens IntegrationToken[] // User-level tokens (e.g., Telegram)
+
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+  Invitation Invitation[]
+}
+
+enum UserRole {
+  ADMIN
+  TRAINER
+  DEVELOPER
+  VIEWER
+}
+
+model IntegrationToken {
+  id           String    @id @default(uuid())
+  service      String // 'clickup', 'servicenow', 'telegram', etc.
+  accessToken  String
+  refreshToken String?
+  metadata     Json?
+  expiresAt    DateTime?
+
+  workspaceId String? // Null for user-level tokens
+  userId      String? // Null for org-level tokens
+
+  workspace Workspace? @relation(fields: [workspaceId], references: [id])
+  user      User?      @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([service, workspaceId])
+  @@unique([service, userId])
+}
+
+model Invitation {
+  id          String           @id @default(uuid())
+  email       String
+  username    String?
+  role        UserRole
+  token       String           @unique
+  status      InvitationStatus @default(PENDING)
+  expiresAt   DateTime
+  invitedById String
+  workspaceId String
+
+  invitedBy User      @relation(fields: [invitedById], references: [id])
+  workspace Workspace @relation(fields: [workspaceId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum InvitationStatus {
+  PENDING
+  ACCEPTED
+  EXPIRED
+  CANCELLED
+}
